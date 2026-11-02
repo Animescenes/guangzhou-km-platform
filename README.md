@@ -1,46 +1,36 @@
-# Guangzhou KM Trading Co., Ltd. — multilingual B2B sourcing platform starter
+# Guangzhou KM Trading Co., Ltd. — Multilingual B2B sourcing platform starter
 
-This is the first frontend starter for the planned dynamic platform. It includes a responsive homepage, product-category cards, manufacturer promotion section, services, and a visual inquiry form.
-
-## Confirmed design and language decisions
-- Brand: GUANGZHOU KM TRADING CO., LTD.; Chinese name: 广州匡茂贸易有限公司.
-- Motto: Built on Trust, Driven by Reliability.
-- Colors: navy blue, white, and subtle gold accents.
-- Languages: English (default), Simplified Chinese (中文), and Amharic (አማርኛ). The language selector remembers the visitor's choice in local storage.
-- Five business-card services: Import & Export; Freight & Logistics; Product Sourcing; Supplier Verification; Business Tour.
-- Manufacturer promotion is free; buyer inquiries are intended to be coordinated by Guangzhou KM.
-
-## Important status
-This is **not yet a production-ready dynamic platform**. The homepage is implemented, but authentication, live product data, real inquiry storage, upload storage, moderation, and admin authorization still need to be connected and tested. The current inquiry form uses a mailto placeholder and is not a secure production form.
-
-## Requirements
-- Node.js 20 or newer
-- A Supabase project for database, authentication, and file storage
-- A hosting account such as Vercel
+A responsive Next.js 14 starter website for Guangzhou KM Trading Co., Ltd., with English, Simplified Chinese, and Amharic language selection.
 
 ## Run locally
-1. Install Node.js.
-2. Extract this folder.
-3. Open a terminal in the project folder.
-4. Run `npm install`.
-5. Run `npm run dev`.
-6. Open `http://localhost:3000`.
 
-## Connect Supabase
-1. Create a Supabase project.
-2. Copy `.env.example` to `.env.local`.
-3. Add your Supabase project URL and public anon key to `.env.local`.
-4. Review `supabase/schema.sql` and run it in the Supabase SQL Editor.
-5. Implement server-side authentication, inquiry submission, product uploads, and admin moderation before publishing.
+Requirements: Node.js 18.17+.
 
-Never put a Supabase service-role key in frontend code or share passwords/API secrets in chat.
+```bash
+npm install
+npm run dev
+```
 
-## Planned next steps
-1. Registration and login with manufacturer/buyer roles.
-2. Manufacturer profile submission and admin approval.
-3. Product management and image uploads.
-4. Public search for approved manufacturers and products.
-5. Secure inquiry form stored in the database and routed to Guangzhou KM Limited.
-6. Admin dashboard and authorization checks.
-7. Chinese and Amharic translations.
-8. Security, spam protection, and production testing.
+Open http://localhost:3000.
+
+## Deploy to Vercel
+
+Import this repository into Vercel. Framework preset: Next.js. Root directory: `./`. Build command: `npm run build`.
+
+## Included
+
+- Responsive landing page with navy, white, and gold brand palette
+- Five service areas: Import & Export, Freight & Logistics, Product Sourcing, Supplier Verification, Business Tour
+- English, Simplified Chinese, and Amharic copy; language preference is saved in the browser
+- Buyer inquiry form that prepares an email via the visitor's mail application
+- Basic page metadata
+
+## Important limitations
+
+This is a front-end starter, not yet a complete marketplace or production-ready business system. The inquiry form does **not** save submissions to a database. Manufacturer registration, product upload, admin approval, authentication, spam protection, and a real inquiry-management dashboard still need to be implemented and tested before the site is used operationally.
+
+The contact address in the starter (`info@guangzhoukm.com`) is a placeholder; replace it with the company's verified email before publishing. No Supabase credentials are required for this starter.
+
+## Environment variables
+
+`.env.example` is only a template. Never commit real database passwords, API keys, or secrets to GitHub.
