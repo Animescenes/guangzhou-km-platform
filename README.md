@@ -34,3 +34,8 @@ The contact address in the starter (`info@guangzhoukm.com`) is a placeholder; re
 ## Environment variables
 
 `.env.example` is only a template. Never commit real database passwords, API keys, or secrets to GitHub.
+
+
+## Supabase connection
+
+Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in your Vercel environment variables. The buyer inquiry form writes to the `public.inquiries` table. Row Level Security must remain enabled. Never expose a Supabase secret/service-role key in browser code.
