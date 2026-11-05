@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createClient } from "../lib/supabase/client";
 
 type Lang = "en" | "zh" | "am";
 
@@ -138,6 +139,9 @@ const serviceIcons = ["↗", "⇄", "⌕", "✓", "⌂"];
 export default function Home() {
   const [lang, setLang] = useState<Lang>("en");
   const [form, setForm] = useState({ name: "", company: "", email: "", product: "", details: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState("");
+  const [submissionError, setSubmissionError] = useState(false);
   const t = copy[lang];
 
   useEffect(() => {
@@ -150,13 +154,32 @@ export default function Home() {
     window.localStorage.setItem("km-language", value);
   }
 
-  function submitInquiry(e: React.FormEvent<HTMLFormElement>) {
+  async function submitInquiry(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const subject = encodeURIComponent(`Website inquiry: ${form.product}`);
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nCompany: ${form.company || "Not provided"}\nEmail: ${form.email}\nProduct/service: ${form.product}\nDetails: ${form.details}`
-    );
-    window.location.href = `mailto:${t.contactEmail}?subject=${subject}&body=${body}`;
+    setSubmitting(true);
+    setSubmissionMessage("");
+    setSubmissionError(false);
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("inquiries").insert({
+        buyer_user_id: null,
+        buyer_name: form.name.trim(),
+        buyer_email: form.email.trim(),
+        company_name: form.company.trim() || null,
+        message: `Product/service: ${form.product.trim()}\n\nDetails: ${form.details.trim()}`,
+      });
+
+      if (error) throw error;
+      setForm({ name: "", company: "", email: "", product: "", details: "" });
+      setSubmissionMessage(lang === "zh" ? "感谢您的询盘！我们已收到您的信息。" : lang === "am" ? "ስለጠየቁን እናመሰግናለን! መልዕክትዎ ደርሶናል።" : "Thank you. Your inquiry has been received by Guangzhou KM.");
+    } catch (error) {
+      console.error("Inquiry submission failed:", error);
+      setSubmissionError(true);
+      setSubmissionMessage(lang === "zh" ? "提交失败，请稍后重试或通过电子邮件联系我们。" : lang === "am" ? "ጥያቄው አልተላከም። እባክዎ እንደገና ይሞክሩ ወይም በኢሜይል ያግኙን።" : "We couldn't submit your inquiry. Please try again or contact us by email.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -211,7 +234,7 @@ export default function Home() {
           <label>{t.formEmail}<input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="name@company.com" /></label>
           <label>{t.formProduct}<input required value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })} placeholder="e.g. packaging, building materials..." /></label>
           <label>{t.formDetails}<textarea required rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder=" " /></label>
-          <button className="button button-navy" type="submit">{t.formSend} <span>↗</span></button><p className="form-disclaimer">{t.formNote}</p>
+          <button className="button button-navy" type="submit" disabled={submitting}>{submitting ? (lang === "zh" ? "正在提交…" : lang === "am" ? "በመላክ ላይ…" : "Submitting…") : (lang === "en" ? "Submit inquiry" : t.formSend)} <span>↗</span></button>{submissionMessage && <p role="status" aria-live="polite" className="form-disclaimer" style={{ color: submissionError ? "#a33" : "#176b45" }}>{submissionMessage}</p>}<p className="form-disclaimer">{lang === "en" ? "Your inquiry is sent securely to Guangzhou KM and is not displayed publicly." : lang === "zh" ? "您的询盘将安全发送给广州KM，不会公开显示。" : "ጥያቄዎ በደህና ወደ Guangzhou KM ይላካል፤ በይፋ አይታይም።"}</p>
         </form>
       </section>
 
